@@ -1,0 +1,8 @@
+Data prep
+From 'Full history data 11.08.22.xlsx',
+extract the following without commas:
+Supplier Property_Reference Description	Fund Description Desc
+SHELBORNE 1019FORES Premium no 1019	Rent (P&L) Insurance
+
+Load the list of unique classes into the constants array.
+Delete the headings from the train file
