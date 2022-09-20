@@ -31,15 +31,14 @@ def train(dataloader):
 
     for idx, (label, text, offsets) in enumerate(dataloader):
         optimizer.zero_grad()
-        #predicted_label = model(text, offsets) #---------- RESTORE
-        #text = np.array(text, dtype=np.float64)
-        #text = torch.tensor(text , dtype=torch.float64)
         predicted_label = model(text)
-        loss = criterion(predicted_label, label)
+        #loss = criterion(predicted_label, label)
+        loss = criterion(predicted_label.argmax(1), label)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), np.float32(0))
         optimizer.step()
         total_acc += (predicted_label.argmax(1) == label).sum().item()
+        # total_acc += (predicted_label.argmax(0) == label).sum().item()
         total_count += label.size(0)
         if idx % log_interval == 0 and idx > 0:
             elapsed = time.time() - start_time
@@ -62,7 +61,8 @@ def evaluate(dataloader):
 
 EPOCHS = 10 # epoch
 LR = 5  # learning rate
-BATCH_SIZE = 64 # batch size for training
+#BATCH_SIZE = 64 # batch size for training
+BATCH_SIZE = 1 # batch size for training
 
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=LR)
