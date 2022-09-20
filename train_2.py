@@ -32,8 +32,7 @@ def train(dataloader):
     for idx, (label, text, offsets) in enumerate(dataloader):
         optimizer.zero_grad()
         predicted_label = model(text)
-        #loss = criterion(predicted_label, label)
-        loss = criterion(predicted_label.argmax(1), label)
+        loss = criterion(predicted_label.argmax(0), torch.flatten(label))
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), np.float32(0))
         optimizer.step()
