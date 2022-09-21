@@ -11,18 +11,15 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def collate_batch(batch):
     label_list, text_list, offsets = [], [], [0]
     for (_label, _text) in batch:
-        #processed_text = torch.tensor(_text, dtype=torch.int64) #----------RESTORE
         _text = np.array(_text)
         processed_text = torch.tensor(_text , dtype=torch.float32)
         text_list.append(processed_text)
         offsets.append(processed_text.size(0))
-        #processed_label = torch.tensor(_label, dtype=torch.int64) #----------RESTORE
         _label = np.array(_label)
         processed_label = torch.tensor(_label , dtype=torch.float32)
         label_list.append(processed_label)
     offsets = torch.tensor(offsets[:-1]).cumsum(dim=0)
     text_list = torch.cat(text_list)
-    #label_list = torch.tensor(label_list, dtype=torch.int64) #----------RESTORE
     label_list = torch.tensor(label_list, dtype=torch.float32)
     return label_list.to(device), text_list.to(device), offsets.to(device)
 

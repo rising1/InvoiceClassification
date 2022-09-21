@@ -18,7 +18,6 @@ train_iter = prepare_data(constants.PATH_TO_TRAIN_DATA)
 num_class = len(constants.CLASSES)
 vocab_size = 71
 emsize = 500
-#model = TextClassificationModel(vocab_size, emsize, num_class).to(device) #---------- RESTORE
 model = NeuralNetwork().to(device)
 print("device=",device)
 
@@ -32,8 +31,6 @@ def train(dataloader):
     for idx, (label, text, offsets) in enumerate(dataloader):
         optimizer.zero_grad()
         predicted_label = model(text)
-        predicted_label = predicted_label[predicted_label.argmax(0)]
-        predicted_label = torch.reshape(predicted_label,(1,))
         loss = criterion(predicted_label, label)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), np.float32(0))
@@ -54,9 +51,11 @@ def evaluate(dataloader):
     total_acc, total_count = 0, 0
     with torch.no_grad():
         for idx, (label, text, offsets) in enumerate(dataloader):
-            predicted_label = model(text, offsets)
+            predicted_label = model(text)
+            #predicted_label = predicted_label[predicted_label.argmax(0)]
+            #predicted_label = torch.reshape(predicted_label, (1,))
             loss = criterion(predicted_label, label)
-            total_acc += (predicted_label.argmax(1) == label).sum().item()
+            total_acc += (predicted_label == label).sum().item()
             total_count += label.size(0)
     return total_acc/total_count
 
@@ -66,6 +65,7 @@ BATCH_SIZE = 64 # batch size for training
 #BATCH_SIZE = 1 # batch size for training
 
 criterion = torch.nn.CrossEntropyLoss()
+#criterion = torch.nn.MSELoss
 optimizer = torch.optim.SGD(model.parameters(), lr=LR)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
 total_accu = None
