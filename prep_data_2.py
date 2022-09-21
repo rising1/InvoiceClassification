@@ -31,9 +31,9 @@ def collate_batch(batch):
 def prepare_data(path_to_file):
     csv_data = []
     train_iter = []
-    print(len(constants.TOKENS))
-    print(constants.TOKENS[1])
-    print(constants.TOKENS.index('d'))
+    #print(len(constants.TOKENS))
+    #print(constants.TOKENS[1])
+    #print(constants.TOKENS.index('d'))
     with open(path_to_file, 'r') as read_obj:
         csv_reader = reader(read_obj)
         for row in csv_reader:

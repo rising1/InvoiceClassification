@@ -38,7 +38,7 @@ def train(dataloader):
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), np.float32(0))
         optimizer.step()
-        total_acc += (predicted_label.argmax(1) == label).sum().item()
+        total_acc += (predicted_label == label).sum().item()
         # total_acc += (predicted_label.argmax(0) == label).sum().item()
         total_count += label.size(0)
         if idx % log_interval == 0 and idx > 0:
@@ -62,8 +62,8 @@ def evaluate(dataloader):
 
 EPOCHS = 10 # epoch
 LR = 5  # learning rate
-#BATCH_SIZE = 64 # batch size for training
-BATCH_SIZE = 1 # batch size for training
+BATCH_SIZE = 64 # batch size for training
+#BATCH_SIZE = 1 # batch size for training
 
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=LR)
